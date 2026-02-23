@@ -1,6 +1,20 @@
-# NeuroStack — AI Systems Mastery Platform
+<p align="center">
+  <img src="assets/neurostack_banner.png" alt="NeuroStack Banner" width="100%">
+</p>
+
+# <p align="center">NeuroStack — AI Systems Mastery Platform</p>
+
+<p align="center">
+  <img src="assets/neurostack_logo.png" alt="NeuroStack Logo" width="200">
+</p>
 
 NeuroStack is a production-grade, multilingual AI learning platform designed to teach AI systems architectures (Transformers, MoE, Quantization) through interactive visual learning, adaptive roadmaps, and an embedded AI mentor.
+
+## 📺 Demo Walkthrough
+
+<!-- <p align="center">
+  <img src="assets/neurostack_demo.webp" alt="NeuroStack Demo Walkthrough" width="100%">
+</p> -->
 
 **Tech Stack:**
 
