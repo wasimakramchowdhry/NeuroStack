@@ -1,6 +1,6 @@
-<p align="center">
+<!-- <p align="center">
   <img src="assets/neurostack_banner.png" alt="NeuroStack Banner" width="100%">
-</p>
+</p> -->
 
 # <p align="center">NeuroStack — AI Systems Mastery Platform</p>
 
