@@ -1,0 +1,207 @@
+# ──────────────────────────────────────────────────────────────
+# NeuroStack — Full Stack Docker Compose
+# Usage:
+#   docker compose up -d            (start all services)
+#   docker compose --profile vllm up -d   (include vLLM GPU server)
+#   docker compose down             (stop all services)
+# ──────────────────────────────────────────────────────────────
+
+services:
+
+  # ── PostgreSQL Database ──────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: neurostack-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB:-neurostack}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-neurostack}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Redis (Celery broker + result backend) ───────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: neurostack-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── FastAPI Backend ──────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: neurostack-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/api/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ── Celery Background Worker ─────────────────────────────────
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: neurostack-celery
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    command: celery -A app.tasks.celery_app worker -l INFO -P eventlet
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── DB Migrations (run once, then exit) ──────────────────────
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: neurostack-migrate
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+    command: alembic upgrade head
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  # ── Seed Admin User (run once, then exit) ────────────────────
+  seed-admin:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: neurostack-seed-admin
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+    command: |
+      python -c "
+      import asyncio, sys;
+      sys.path.insert(0, '/app');
+      from app.database import AsyncSessionLocal;
+      from app.modules.auth.models import User;
+      from app.core.security import get_password_hash;
+      from sqlalchemy import select;
+      async def seed():
+          async with AsyncSessionLocal() as s:
+              r = await s.execute(select(User).where(User.email=='admin@neurostack.com'));
+              if r.scalar_one_or_none():
+                  print('Admin already exists');
+                  return;
+              s.add(User(email='admin@neurostack.com', full_name='System Admin', password_hash=get_password_hash('Admin123!'), role='admin'));
+              await s.commit();
+              print('Admin created: admin@neurostack.com / Admin123!');
+      asyncio.run(seed())
+      "
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  # ── React Frontend (Nginx) ──────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8000
+    container_name: neurostack-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ── Ollama LLM Server (optional, use --profile ollama) ──────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: neurostack-ollama
+    restart: unless-stopped
+    profiles:
+      - ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+
+  # ── vLLM GPU Inference Server (optional, use --profile vllm) ─
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: neurostack-vllm
+    restart: unless-stopped
+    profiles:
+      - vllm
+    ports:
+      - "8001:8000"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN:-}
+    command: >
+      --model ${VLLM_MODEL:-mistralai/Mistral-7B-Instruct-v0.3} --dtype auto --max-model-len 4096 --gpu-memory-utilization 0.85
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    volumes:
+      - vllm_cache:/root/.cache/huggingface
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_data:
+  vllm_cache:

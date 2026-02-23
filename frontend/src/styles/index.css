@@ -1,0 +1,42 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+@import 'katex/dist/katex.min.css';
+
+/* Smooth scrolling and polished animations */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for Neo-tactoid aesthetic */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neo-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neo-shadow-dark);
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neo-text-secondary);
+}
+
+/* Selection color */
+::selection {
+  background: var(--neo-accent-orange);
+  color: white;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--neo-focus);
+  outline-offset: 2px;
+}
