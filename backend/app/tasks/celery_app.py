@@ -11,8 +11,8 @@ from app.config import settings
 # Initialize Celery app with Redis broker
 celery_app = Celery(
     "neurostack_worker",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/1"
+    broker=settings.REDIS_URL,
+    backend=settings.REDIS_URL.replace("/0", "/1") # Use DB 1 for results
 )
 
 celery_app.conf.update(

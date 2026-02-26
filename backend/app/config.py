@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import PostgresDsn, computed_field
-from typing import Optional
+from pydantic import PostgresDsn, computed_field, field_validator
+from typing import Optional, Union
+import json
 
 class Settings(BaseSettings):
     PROJECT_NAME: str
@@ -38,10 +39,30 @@ class Settings(BaseSettings):
     OLLAMA_BASE_URL: str
     OLLAMA_MODEL: str
 
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, list[str]]) -> list[str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, str) and v.startswith("["):
+            return json.loads(v)
+        return v
+
+    # Redis for Celery
+    REDIS_URL: str = "redis://redis:6379/0"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_ignore_empty=True,
         extra="ignore"
     )
 
-settings = Settings()
+try:
+    settings = Settings()
+except Exception as e:
+    import sys
+    print(f"\n❌ SETTINGS ERROR: {e}\n", file=sys.stderr)
+    print("Please check your .env file for missing or invalid values.\n", file=sys.stderr)
+    # Re-raise so the process still exits, but with a clear message in logs
+    raise
+

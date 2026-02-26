@@ -9,6 +9,8 @@ from app.modules.users.router import router as users_router
 from app.modules.topics.router import router as topics_router
 from app.modules.translations.router import router as translations_router
 from app.modules.quiz.router import router as quiz_router
+from app.database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.auth.dependencies import get_current_admin_user
 import time
 import httpx
@@ -48,8 +50,13 @@ app.include_router(translations_router, prefix=settings.API_V1_STR)
 app.include_router(quiz_router, prefix=settings.API_V1_STR)
 
 @app.get("/api/health")
-async def health_check():
-    return {"status": "healthy", "db": "connected"}
+async def health_check(db: AsyncSession = Depends(get_db)):
+    try:
+        from sqlalchemy import text
+        await db.execute(text("SELECT 1"))
+        return {"status": "healthy", "db": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "db": str(e)}
 
 
 @app.get(f"{settings.API_V1_STR}/settings")

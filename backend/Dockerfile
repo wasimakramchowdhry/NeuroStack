@@ -1,4 +1,4 @@
-# ──────────────────────────────────────────────────────────────
+﻿# ──────────────────────────────────────────────────────────────
 # NeuroStack Backend — Production Dockerfile
 # FastAPI + Uvicorn + Celery (shared image, different CMD)
 # ──────────────────────────────────────────────────────────────
@@ -17,9 +17,9 @@ RUN apt-get update && \
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir celery[redis] redis eventlet httpx
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir "celery[redis]" redis eventlet httpx
 
 # Copy application code
 COPY . .

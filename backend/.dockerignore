@@ -1,13 +1,26 @@
-__pycache__
-*.pyc
-*.pyo
-.env.local
-venv/
-.venv/
+# Git
 .git
 .gitignore
-*.md
-.mypy_cache
-.pytest_cache
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
 .coverage
-htmlcov/
+.mypy_cache/
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Migration logs or temp files
+*.log
+alembic/*.pyc
+
+# OS Files
+.DS_Store
+Thumbs.db

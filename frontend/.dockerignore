@@ -1,7 +1,31 @@
-node_modules
-dist
-.git
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production Build
+dist/
+build/
+
+# Debug Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Git
+.git/
 .gitignore
-*.md
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment Variables (Optional, usually handled via CI/CD or separate .env)
+.env
 .env.local
-.vite
+.env.development.local
+.env.test.local
+.env.production.local
