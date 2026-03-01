@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { topicAPI, type Difficulty } from '../../services/topicApi';
 import type { Topic } from '../../services/topicApi';
 import { TopicCard } from '../../components/topics/TopicCard';
@@ -11,6 +12,7 @@ import { Library, Filter, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function TopicListPage() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [modules, setModules] = useState<string[]>([]);
@@ -78,11 +80,11 @@ export function TopicListPage() {
             <Library className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
-            Topic Library
+            {t('topics.library', 'Topic Library')}
           </h1>
         </div>
         <p className="text-slate-600 dark:text-slate-400 ml-14">
-          Explore AI Systems topics from fundamentals to advanced concepts
+          {t('topics.exploreCollection', 'Explore our comprehensive collection of AI & ML topics')}
         </p>
       </div>
 
@@ -169,7 +171,7 @@ export function TopicListPage() {
       ) : topics.length === 0 ? (
         <NeoCard className="p-12 text-center">
           <p className="text-slate-600 dark:text-slate-400">
-            No topics found matching your filters.
+            {t('topics.noTopicsFound', 'No topics found matching your filters.')}
           </p>
           {hasActiveFilters && (
             <NeoButton

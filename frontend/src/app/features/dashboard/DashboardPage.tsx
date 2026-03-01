@@ -1,13 +1,14 @@
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { NeoCard } from '../../components/neo/NeoCard';
 import { NeoButton } from '../../components/neo/NeoButton';
 import { useAuthStore } from '../../store/authStore';
 import { useNavigate } from 'react-router';
-import { 
-  BookOpen, 
-  Trophy, 
-  Target, 
-  TrendingUp, 
+import {
+  BookOpen,
+  Trophy,
+  Target,
+  TrendingUp,
   Sparkles,
   Clock,
   Award,
@@ -18,12 +19,13 @@ import {
 export function DashboardPage() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const stats = [
-    { icon: BookOpen, label: 'Topics', value: '0/50', color: 'var(--neo-accent-orange)' },
-    { icon: Trophy, label: 'Quizzes', value: '0', color: 'var(--neo-accent-success)' },
-    { icon: Award, label: 'Badges', value: '0', color: 'var(--neo-accent-slate)' },
-    { icon: Zap, label: 'Streak', value: '0 days', color: 'var(--neo-accent-orange)' },
+    { icon: BookOpen, label: t('dashboard.topics', 'Topics'), value: '0/50', color: 'var(--neo-accent-orange)' },
+    { icon: Trophy, label: t('dashboard.quizzes', 'Quizzes'), value: '0', color: 'var(--neo-accent-success)' },
+    { icon: Award, label: t('dashboard.badges', 'Badges'), value: '0', color: 'var(--neo-accent-slate)' },
+    { icon: Zap, label: t('dashboard.streak', 'Streak'), value: '0 days', color: 'var(--neo-accent-orange)' },
   ];
 
   const recentActivity = [
@@ -39,10 +41,10 @@ export function DashboardPage() {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-[var(--neo-text-primary)] mb-2">
-            Welcome back, {user?.full_name?.split(' ')[0]}! 👋
+            {t('dashboard.welcomeBack', 'Welcome back, {{name}}!', { name: user?.full_name?.split(' ')[0] })} 👋
           </h1>
           <p className="text-[var(--neo-text-secondary)]">
-            Ready to continue your AI Systems mastery journey?
+            {t('dashboard.readyContinue', 'Ready to continue your AI Systems mastery journey?')}
           </p>
         </div>
 
@@ -83,7 +85,7 @@ export function DashboardPage() {
               <div className="flex items-center gap-3 mb-6">
                 <Target className="w-5 h-5 text-[var(--neo-accent-orange)]" />
                 <h2 className="text-xl font-semibold text-[var(--neo-text-primary)]">
-                  Your Learning Path
+                  {t('dashboard.learningPath', 'Your Learning Path')}
                 </h2>
               </div>
 
@@ -129,7 +131,7 @@ export function DashboardPage() {
                 transition={{ delay: 0.6 }}
                 className="mt-6"
               >
-                <NeoCard 
+                <NeoCard
                   className="p-6 cursor-pointer hover:scale-[1.02] transition-transform"
                   onClick={() => navigate('/topics')}
                 >
@@ -139,10 +141,10 @@ export function DashboardPage() {
                     </NeoCard>
                     <div className="flex-1">
                       <h3 className="font-semibold text-[var(--neo-text-primary)] mb-1">
-                        Start Learning
+                        {t('dashboard.startLearning', 'Start Learning')}
                       </h3>
                       <p className="text-sm text-[var(--neo-text-secondary)]">
-                        Explore the Topic Library and begin your journey
+                        {t('dashboard.exploreTopics', 'Explore the Topic Library and begin your journey')}
                       </p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-[var(--neo-accent-orange)]" />
@@ -158,7 +160,7 @@ export function DashboardPage() {
               <div className="flex items-center gap-3 mb-6">
                 <Clock className="w-5 h-5 text-[var(--neo-accent-orange)]" />
                 <h2 className="text-xl font-semibold text-[var(--neo-text-primary)]">
-                  Recent Activity
+                  {t('dashboard.recentActivity', 'Recent Activity')}
                 </h2>
               </div>
 
@@ -198,7 +200,7 @@ export function DashboardPage() {
               <div className="flex items-center gap-3 mb-4">
                 <TrendingUp className="w-5 h-5 text-[var(--neo-accent-success)]" />
                 <h3 className="font-semibold text-[var(--neo-text-primary)]">
-                  Weekly Goal
+                  {t('dashboard.weeklyGoal', 'Weekly Goal')}
                 </h3>
               </div>
               <div className="text-center py-6">
@@ -206,7 +208,7 @@ export function DashboardPage() {
                   0/5
                 </div>
                 <p className="text-sm text-[var(--neo-text-secondary)]">
-                  Topics this week
+                  {t('dashboard.topicsThisWeek', 'Topics this week')}
                 </p>
               </div>
               <div className="w-full h-3 rounded-full bg-background shadow-inner">

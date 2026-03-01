@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { NeoCard } from '../../components/neo/NeoCard';
 import { NeoInput } from '../../components/neo/NeoInput';
 import { NeoSelect } from '../../components/neo/NeoSelect';
@@ -15,6 +16,7 @@ import { Brain, Mail, Lock, User, Globe } from 'lucide-react';
 export function RegisterPage() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -86,10 +88,10 @@ export function RegisterPage() {
               <AnimatedLogo size="md" />
             </div>
             <h1 className="text-2xl font-semibold text-[var(--neo-text-primary)] mb-2">
-              Join NeuroStack
+              {t('auth.createAccount', 'Create Your Account')}
             </h1>
             <p className="text-[var(--neo-text-secondary)]">
-              Start your AI Systems mastery journey
+              {t('auth.joinNeuroStack', 'Join NeuroStack and master AI systems')}
             </p>
           </div>
 
@@ -99,7 +101,7 @@ export function RegisterPage() {
               <div className="relative">
                 <User className="absolute left-4 top-[46px] w-5 h-5 text-[var(--neo-text-secondary)] pointer-events-none z-10" />
                 <NeoInput
-                  label="Full Name"
+                  label={t('auth.fullName', 'Full Name')}
                   type="text"
                   placeholder="John Doe"
                   value={formData.full_name}
@@ -115,7 +117,7 @@ export function RegisterPage() {
               <div className="relative">
                 <Mail className="absolute left-4 top-[46px] w-5 h-5 text-[var(--neo-text-secondary)] pointer-events-none z-10" />
                 <NeoInput
-                  label="Email"
+                  label={t('auth.email', 'Email')}
                   type="email"
                   placeholder="your.email@example.com"
                   value={formData.email}
@@ -131,7 +133,7 @@ export function RegisterPage() {
               <div className="relative">
                 <Lock className="absolute left-4 top-[46px] w-5 h-5 text-[var(--neo-text-secondary)] pointer-events-none z-10" />
                 <NeoInput
-                  label="Password"
+                  label={t('auth.password', 'Password')}
                   type="password"
                   placeholder="••••••••"
                   value={formData.password}
@@ -147,7 +149,7 @@ export function RegisterPage() {
               <div className="relative">
                 <Lock className="absolute left-4 top-[46px] w-5 h-5 text-[var(--neo-text-secondary)] pointer-events-none z-10" />
                 <NeoInput
-                  label="Confirm Password"
+                  label={t('auth.confirmPassword', 'Confirm Password')}
                   type="password"
                   placeholder="••••••••"
                   value={formData.confirmPassword}
@@ -193,17 +195,17 @@ export function RegisterPage() {
               fullWidth
               loading={loading}
             >
-              Create Account
+              {t('auth.createAccountBtn', 'Create Account')}
             </NeoButton>
 
             <div className="text-center">
               <p className="text-[var(--neo-text-secondary)] text-sm">
-                Already have an account?{' '}
+                {t('auth.haveAccount', 'Already have an account?')}{' '}
                 <Link
                   to="/login"
                   className="text-[var(--neo-accent-orange)] hover:underline font-medium"
                 >
-                  Sign in
+                  {t('auth.signInLink', 'Sign in')}
                 </Link>
               </p>
             </div>

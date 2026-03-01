@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { NeoCard } from '../../components/neo/NeoCard';
 import { NeoInput } from '../../components/neo/NeoInput';
 import { NeoButton } from '../../components/neo/NeoButton';
@@ -13,6 +14,7 @@ import { Brain, Mail, Lock } from 'lucide-react';
 export function LoginPage() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -52,10 +54,10 @@ export function LoginPage() {
               <AnimatedLogo size="md" />
             </div>
             <h1 className="text-2xl font-semibold text-[var(--neo-text-primary)] mb-2">
-              Welcome Back
+              {t('auth.welcomeBack', 'Welcome Back')}
             </h1>
             <p className="text-[var(--neo-text-secondary)]">
-              Continue your AI learning journey
+              {t('auth.continueJourney', 'Continue your AI learning journey')}
             </p>
           </div>
 
@@ -65,7 +67,7 @@ export function LoginPage() {
               <div className="relative">
                 <Mail className="absolute left-4 top-[46px] w-5 h-5 text-[var(--neo-text-secondary)] pointer-events-none z-10" />
                 <NeoInput
-                  label="Email"
+                  label={t('auth.email', 'Email')}
                   type="email"
                   placeholder="your.email@example.com"
                   value={formData.email}
@@ -81,7 +83,7 @@ export function LoginPage() {
               <div className="relative">
                 <Lock className="absolute left-4 top-[46px] w-5 h-5 text-[var(--neo-text-secondary)] pointer-events-none z-10" />
                 <NeoInput
-                  label="Password"
+                  label={t('auth.password', 'Password')}
                   type="password"
                   placeholder="••••••••"
                   value={formData.password}
@@ -111,17 +113,17 @@ export function LoginPage() {
               fullWidth
               loading={loading}
             >
-              Sign In
+              {t('auth.signIn', 'Sign In')}
             </NeoButton>
 
             <div className="text-center">
               <p className="text-[var(--neo-text-secondary)] text-sm">
-                Don't have an account?{' '}
+                {t('auth.noAccount', "Don't have an account?")}{' '}
                 <Link
                   to="/register"
                   className="text-[var(--neo-accent-orange)] hover:underline font-medium"
                 >
-                  Create one
+                  {t('auth.createOne', 'Create one')}
                 </Link>
               </p>
             </div>

@@ -3,9 +3,15 @@ import os
 import sys
 import uuid
 
-# Add the backend folder to the python path
+# Add the backend folder to the python path and chdir so .env is found
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(project_root, "backend"))
+backend_dir = os.path.join(project_root, "backend")
+sys.path.append(backend_dir)
+os.chdir(backend_dir)
+
+# When running outside Docker, override postgres host to localhost
+if os.environ.get("POSTGRES_SERVER") is None:
+    os.environ.setdefault("POSTGRES_SERVER", "localhost")
 
 from app.database import AsyncSessionLocal
 from app.modules.topics.models import Topic, TopicContent, DifficultyLevel, SectionType

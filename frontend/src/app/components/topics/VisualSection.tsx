@@ -1,15 +1,42 @@
 import { NeoCard } from '../neo/NeoCard';
 import { Sparkles } from 'lucide-react';
+import { AnimationScene } from '../../../animations/components/AnimationScene';
+import { validAnimationIds } from '../../../animations/registry';
 
 interface VisualSectionProps {
   content: {
     title?: string;
     description?: string;
     placeholderText?: string;
+    animation_id?: string;
+    fallback_image?: string;
+    fallback_description?: string;
+    auto_play?: boolean;
+    caption?: string;
   };
 }
 
 export function VisualSection({ content }: VisualSectionProps) {
+  // If an animation_id is provided and it exists in the registry, render the animation
+  if (content.animation_id && validAnimationIds.includes(content.animation_id)) {
+    return (
+      <div className="space-y-2">
+        <AnimationScene
+          animationId={content.animation_id}
+          fallbackImage={content.fallback_image}
+          fallbackDescription={content.fallback_description || content.description}
+          autoPlay={content.auto_play}
+        />
+        {content.caption && (
+          <p className="text-xs text-center text-[var(--neo-text-secondary)] italic">
+            {content.caption}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Fallback: placeholder card for visuals without animation_id
   return (
     <NeoCard className="p-8 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-800 dark:to-slate-900">
       <div className="flex flex-col items-center justify-center space-y-4 py-12">
@@ -22,11 +49,8 @@ export function VisualSection({ content }: VisualSectionProps) {
           </h3>
         )}
         <p className="text-slate-600 dark:text-slate-400 text-center max-w-2xl">
-          {content.placeholderText || content.description || 'Interactive visualization coming in Phase 5'}
+          {content.placeholderText || content.description || 'Interactive visualization coming soon'}
         </p>
-        <div className="text-xs text-slate-500 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
-          Phase 5: GSAP Animation
-        </div>
       </div>
     </NeoCard>
   );
