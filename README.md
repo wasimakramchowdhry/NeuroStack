@@ -10,11 +10,49 @@
 
 NeuroStack is a production-grade, multilingual AI learning platform designed to teach AI systems architectures (Transformers, MoE, Quantization) through interactive visual learning, adaptive roadmaps, and an embedded AI mentor.
 
+<p align="center">
+  <a href="https://github.com/wasimakramchowdhry/NeuroStack/stargazers">
+    <img src="https://img.shields.io/github/stars/wasimakramchowdhry/NeuroStack?style=for-the-badge&logo=github&color=f97316&labelColor=1e293b" alt="GitHub Stars">
+  </a>
+  <a href="https://github.com/wasimakramchowdhry/NeuroStack/network/members">
+    <img src="https://img.shields.io/github/forks/wasimakramchowdhry/NeuroStack?style=for-the-badge&logo=github&color=8b5cf6&labelColor=1e293b" alt="GitHub Forks">
+  </a>
+  <a href="https://github.com/wasimakramchowdhry/NeuroStack/issues">
+    <img src="https://img.shields.io/github/issues/wasimakramchowdhry/NeuroStack?style=for-the-badge&logo=github&color=3b82f6&labelColor=1e293b" alt="GitHub Issues">
+  </a>
+</p>
+
+---
+
+## Support This Project
+
+If you find NeuroStack useful, please consider giving it a star on GitHub! It helps others discover the project and motivates continued development.
+
+### How to Star this Repository
+
+1. Make sure you're **signed in** to your GitHub account
+2. Scroll to the **top of this page** (or [click here](https://github.com/wasimakramchowdhry/NeuroStack))
+3. Click the **Star** button in the top-right corner (next to "Fork")
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Click_the_%E2%AD%90_Star_button_at_the_top_right!-f97316?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo">
+</p>
+
+> Every star helps the project grow and reach more learners. Thank you for your support!
+
+---
+
 ## 📺 Demo Walkthrough
 
-<!-- <p align="center">
-  <img src="assets/neurostack_demo.webp" alt="NeuroStack Demo Walkthrough" width="100%">
-</p> -->
+<p align="center">
+  <a href="https://youtu.be/YOUR_VIDEO_ID">
+    <img src="https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg" alt="NeuroStack Demo Video" width="80%">
+  </a>
+</p>
+
+<p align="center">
+  <em>Click the image above to watch the full demo on YouTube</em>
+</p>
 
 **Tech Stack:**
 
@@ -42,7 +80,8 @@ NeuroStack is a production-grade, multilingual AI learning platform designed to 
 - [Environment Variables Reference](#environment-variables-reference)
 - [API Documentation](#api-documentation)
 - [Project Structure](#project-structure)
-- [The 4 Development Phases](#the-4-development-phases)
+- [Support This Project](#support-this-project)
+- [The 5 Development Phases](#the-5-development-phases)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -771,7 +810,7 @@ NeuroStack/
 
 ---
 
-## The 4 Development Phases
+## The 5 Development Phases
 
 ### Phase 1: Foundation & Auth
 Sets up the foundational repository architectures. Features include secure JWT authentication, PostgreSQL database schemas, bcrypt password hashing, Vite+React frontend scaffolding, and the implementation of our custom highly-stylized Neo-tactoid/Neumorphic CSS design system.
@@ -787,6 +826,17 @@ An extensive self-testing ecosystem attached to the Topic Engine.
 - **Learner Side:** Features a sleek quiz session timer interface supporting Multiple Choice, Text Areas, and Code Completion inputs, alongside deeply analytical Results screens.
 - **Admin Side:** Features the AdminQuizEditor that allows complete manual construction of assessments OR automated AI drafting where Uvicorn prompts the local `mistral:7b` Ollama daemon to instantly generate relevant, targeted questions based strictly on a topic's content.
 - **Evaluation:** Grading integrates direct string matching arrays alongside semantic "rubric grading" via the local LLM.
+
+### Phase 5: Visual Learning & GSAP Animations
+Brings AI concepts to life with interactive, step-by-step GSAP-powered animations. Features 6 educational scenes:
+- **Transformer Attention** — QKV flow, softmax normalization, multi-head split/concat
+- **Matrix Multiplication** — Step-by-step row-column dot product visualization
+- **MoE Routing** — Token routing to specialist expert sub-networks
+- **Quantization** — Float32 to Int8 compression with precision loss analysis
+- **Sparse Activation** — ReLU sparsity heatmap and computational savings
+- **CPU vs GPU** — Parallel vs sequential computation race
+
+Each animation has play/pause/step controls, step-synced annotations with math formulas, dark/light theme support, fullscreen mode, and `prefers-reduced-motion` accessibility. Animations are lazy-loaded via code-splitting and integrated into the Topic Viewer through an animation registry.
 
 ---
 
