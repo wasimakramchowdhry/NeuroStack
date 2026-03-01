@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguageStore } from '../app/store/languageStore';
 import { useAuthStore } from '../app/store/authStore';
@@ -12,28 +12,30 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     const { i18n } = useTranslation();
     const { language, setLanguage } = useLanguageStore();
     const { isAuthenticated, user } = useAuthStore();
+    const initialSyncDone = useRef(false);
 
-    // 1. On Mount: sync Zustand state with detected/saved language
+    // On mount: sync from user's saved preference (one-time)
     useEffect(() => {
-        if (user?.preferred_language && user.preferred_language !== language) {
-            setLanguage(user.preferred_language);
-            i18n.changeLanguage(user.preferred_language);
-        } else {
+        if (!initialSyncDone.current && user?.preferred_language) {
+            initialSyncDone.current = true;
+            if (user.preferred_language !== language) {
+                setLanguage(user.preferred_language);
+            }
+        }
+    }, [user?.preferred_language]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // When Zustand language changes, sync i18next and persist to backend
+    useEffect(() => {
+        if (i18n.language !== language) {
             i18n.changeLanguage(language);
         }
-    }, [user, language, setLanguage, i18n]);
 
-    // 2. Global listener for language swaps
-    useEffect(() => {
-        i18n.changeLanguage(language);
-
-        // If authenticated, persist their choice back to the DB immediately
-        if (isAuthenticated && language !== user?.preferred_language) {
+        // Persist to backend if authenticated and different from saved preference
+        if (isAuthenticated && user && language !== user.preferred_language) {
             userAPI.updateProfile({ preferred_language: language })
                 .catch((err: any) => console.error("Failed to persist language preference:", err));
         }
-    }, [language, isAuthenticated, user, i18n]);
+    }, [language]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // We do not block render here so Suspense doesn't flicker
     return <>{children}</>;
 }

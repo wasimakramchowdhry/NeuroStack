@@ -2,11 +2,19 @@ import asyncio
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add the backend folder to the python path and chdir so .env is found
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+backend_dir = os.path.join(project_root, "backend")
+sys.path.append(backend_dir)
+os.chdir(backend_dir)
 
-from backend.app.database import AsyncSessionLocal
-from backend.app.modules.auth.models import User
-from backend.app.core.security import get_password_hash
+# When running outside Docker, override postgres host to localhost
+if os.environ.get("POSTGRES_SERVER") is None:
+    os.environ.setdefault("POSTGRES_SERVER", "localhost")
+
+from app.database import AsyncSessionLocal
+from app.modules.auth.models import User
+from app.core.security import get_password_hash
 from sqlalchemy import select
 
 async def create_admin():
@@ -14,7 +22,7 @@ async def create_admin():
         # Check if admin already exists
         result = await session.execute(select(User).where(User.email == "admin@neurostack.com"))
         existing_admin = result.scalar_one_or_none()
-        
+
         if existing_admin:
             print("Admin user already exists! Email: admin@neurostack.com")
             return

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { quizAPI, type QuizLearnerItem } from '../../services/quizApi';
-import { topicAPI, type TopicDetail } from '../../services/topicApi';
 import { NeoCard } from '../../components/neo/NeoCard';
 import { NeoButton } from '../../components/neo/NeoButton';
 import { Badge } from '../../components/ui/badge';
@@ -11,7 +10,7 @@ import { toast } from 'sonner';
 export function QuizListPage() {
     const { topicId } = useParams<{ topicId: string }>();
     const [quizzes, setQuizzes] = useState<QuizLearnerItem[]>([]);
-    const [topic, setTopic] = useState<TopicDetail | null>(null);
+    const [topicTitle, setTopicTitle] = useState<string>('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,14 +22,11 @@ export function QuizListPage() {
     const loadData = async (id: string) => {
         setLoading(true);
         try {
-            // Load both topic details and quizzes in parallel
-            const [topicData, quizzesData] = await Promise.all([
-                topicAPI.getTopic(id), // Wait, topic API usually takes slug or ID? Let's assume ID works or we'll fetch list and find it. 
-                // Actually topicAPI.getTopic typically takes ID or Slug. We'll use ID here.
-                quizAPI.listQuizzesForTopic(id)
-            ]);
-            setTopic(topicData);
+            const quizzesData = await quizAPI.listQuizzesForTopic(id);
             setQuizzes(quizzesData);
+            if (quizzesData.length > 0 && quizzesData[0].topic_title) {
+                setTopicTitle(quizzesData[0].topic_title);
+            }
         } catch (error) {
             console.error('Failed to load quizzes:', error);
             toast.error('Failed to load available quizzes');
@@ -60,16 +56,16 @@ export function QuizListPage() {
         <div className="container mx-auto px-4 py-8 max-w-5xl">
             {/* Header */}
             <div className="mb-8">
-                <Link to={`/topics/${topic?.id || topicId}`} className="inline-flex items-center text-sm text-slate-500 hover:text-indigo-600 mb-4 transition-colors">
+                <Link to="/topics" className="inline-flex items-center text-sm text-slate-500 hover:text-indigo-600 mb-4 transition-colors">
                     <ChevronLeft className="w-4 h-4 mr-1" />
-                    Back to Topic
+                    Back to Topics
                 </Link>
                 <div className="flex items-center gap-3 mb-2">
                     <div className="p-3 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
                         <Target className="w-6 h-6 text-white" />
                     </div>
                     <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
-                        Quizzes for {topic?.title || 'this Topic'}
+                        Quizzes{topicTitle ? ` for ${topicTitle}` : ''}
                     </h1>
                 </div>
                 <p className="text-slate-600 dark:text-slate-400 ml-14">

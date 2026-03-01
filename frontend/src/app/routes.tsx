@@ -18,6 +18,7 @@ import { SystemSettingsPage } from './features/admin/SystemSettingsPage';
 import { QuizSessionPage } from './features/quiz/QuizSessionPage';
 import { QuizResultPage } from './features/quiz/QuizResultPage';
 import { QuizListPage } from './features/quiz/QuizListPage';
+import { QuizHubPage } from './features/quiz/QuizHubPage';
 import { AdminQuizManager } from './features/quiz/AdminQuizManager';
 import { AdminQuizEditor } from './features/quiz/AdminQuizEditor';
 import { useAuthStore } from './store/authStore';
@@ -103,7 +104,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/quiz',
-    element: <Shell><ProtectedRoute><ComingSoonPage title="Quiz Hub" description="Browse and take quizzes from your enrolled topics" /></ProtectedRoute></Shell>,
+    element: <Shell><ProtectedRoute><QuizHubPage /></ProtectedRoute></Shell>,
   },
   {
     path: '/topics/:topicId/quizzes',
