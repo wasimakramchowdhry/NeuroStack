@@ -45,8 +45,8 @@ If you find NeuroStack useful, please consider giving it a star on GitHub! It he
 ## 📺 Demo Walkthrough
 
 <p align="center">
-  <a href="https://youtu.be/YOUR_VIDEO_ID">
-    <img src="https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg" alt="NeuroStack Demo Video" width="80%">
+  <a href="https://youtu.be/8IEBAEqEwq4">
+    <img src="https://img.youtube.com/vi/8IEBAEqEwq4/maxresdefault.jpg" alt="NeuroStack Demo Video" width="80%">
   </a>
 </p>
 
